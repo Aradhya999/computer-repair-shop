@@ -1,0 +1,500 @@
+#include<iostream>
+#include<fstream>
+using namespace std;
+
+class customer
+{
+	public:
+	int custid;
+	char custname[100] , custaddress[100];
+	double custphn ,custordno;
+	float billno;
+	public:
+		
+		void input()
+		{
+			cout<<"###### ENTER CUSTOMER FORM DETAILS ###### \n\n";
+			cout<<"Enter Customer I.D Number :";
+			cin>>custid;
+			cout<<"\nEnter Your Name :";
+			cin>>custname;
+			cout<<"\nEnter Your Address :";
+			cin>>custaddress;
+			cout<<"\nCustomer Phone Number :";
+			cin>>custphn;
+			cout<<"\nCustomer Order Number :";
+		    cin>>custordno;
+		    cout<<"\nCustomer Bill Number :";
+		    cin>>billno;
+		    
+		}
+		
+		void output()
+		{
+	        cout<<"Customer I.D Number :"<<custid<<endl;
+			cout<<"Customer Name :"<<custname<<endl;
+			cout<<"Customer Address :"<<custaddress<<endl;
+			cout<<"Customer Phone Number :"<<custphn<<endl;
+			cout<<"Customer Order Number :"<<custordno<<endl;	
+			cout<<"Customer Bill Number :"<<billno<<endl;
+		}
+		int rno()
+		{
+			return custid;
+		}
+};
+
+void write()
+{
+	char ch;
+		customer c;
+		fstream f1;
+		c.input();
+		f1.open("file1.txt",ios::app|ios::binary);
+		cout<<"\n\n\tDO You Want To Save The Record (y/n)\t";
+		cin>>ch;
+		if(ch=='y')
+		{
+		f1.write((char*)&c,sizeof(c));
+		}
+		f1.close();
+}
+
+void read()
+{
+	    customer c;
+		fstream f1;
+		f1.open("file1.txt",ios::in|ios::binary);
+		while(!f1.eof())
+		{
+		f1.read((char*)&c,sizeof(c));
+		c.output();
+		cout<<"\n--------------------------End of Customer Data-----------------------------------\n";
+		if(f1.eof())
+		{
+		cout<<"\n\n   End Of The Data File Reached  \n\n";
+		}
+		}
+		f1.close();
+}
+ void edit()
+ {
+ 	    customer c;
+		fstream f1("file1.txt",ios::in | ios::out | ios::binary);
+		int rn;
+		long pos;
+		char found='f';
+		cout<<"\n\n Enter The Customer ID You Want To Edit :\t";
+		cin>>rn;
+		while(!f1.eof())
+		{
+		pos=f1.tellg();
+		f1.read((char*)&c,sizeof(c));
+		if(c.rno()==rn)
+		{
+		c.input();
+		f1.seekg(pos);
+		f1.write((char*)&c,sizeof(c));
+		found='t';
+		break;
+		}
+		}
+		if(found=='f')
+		cout<<"\n\n\tRECORD NOT FOUND\n";
+		f1.seekg(0);
+		cout<<" \n EDIT SUCCESSFUL \n ";
+		cout<<"\n Now the Customer File Contains\n\n";
+		c.output();
+		f1.close();
+ }
+ 
+ void del()
+ {
+ 	customer c3;
+ 	ifstream f1("file1.txt",ios::binary);
+ 	ofstream f3("file2.txt",ios::binary);
+ 	int d;
+ 	char found='q',confirm='w';
+ 	cout<<" Enter The Customer ID You Want To Delete : \t";
+ 	cin>>d;
+ 	while(f1.read((char*)&c3,sizeof(c3)))
+ 	{
+ 	if(c3.custid!=d)
+	 {f3.write((char*)&c3,sizeof(c3));
+	 }	
+	 else
+	 {
+	 	found='t';
+	 }
+	}
+   if(found=='f')
+   cout<<"\n\n RECORD NOT FOUND \n\n";
+   f1.close();
+   f3.close();
+   remove("file1.txt");
+   rename("file2.txt","file1.txt");
+   f1.open("file1.txt",ios::in);
+   cout<<"\n\n Now the File Contains \n\n";
+   while(f1.eof())
+   {
+   	f1.read((char*)&c3,sizeof(c3));
+   	if(f1.eof())
+   	c3.output();
+   }
+   f1.close();
+
+ }
+ 
+ 
+ void search()
+ {
+ 	customer c;
+		int rn;
+		char found='n';
+		ifstream f1("file1.txt",ios::in);
+		cout<<"\n\n Enter Customer ID You Want To Search :\t"; 
+		cin>>rn;
+		while(!f1.eof())
+		{
+		f1.read((char*)&c,sizeof(c));
+		if(c.rno()==rn)
+		{
+		c.output();
+		found='y';
+		break;
+		}
+		}
+		if(found=='n')
+		cout<<"\n\n\tCouldnt Find the Record \n"<<endl;
+		f1.close();
+	}
+class billing
+{		
+    public:
+
+		int amount=0,time =0;
+		int prob;
+		int bill_no;
+		int r;
+		void bill()
+		{
+			do
+			{
+			cout<<" # Please Select the Option Corresponding To Your Problem # "<<endl<<endl;
+			cout<<" *Press 1 for Hardware Issues"<<endl<<endl;
+			cout<<" *Press 2 for Software Issues"<<endl<<endl;
+			cout<<" *Press 3 to Buy Accessories"<<endl<<endl;
+			
+				cin>>prob;
+				switch (prob)
+				{
+				case 1:
+				 		{
+						char q; 
+						cout<<" *** Hardware Related Issues *** "<<endl;
+						cout<<" *Press 'a' for Battery Replacement "<<endl;
+						cout<<" *Press 'b' for Speaker Issue"<<endl;
+						cout<<" *Press 'c' for Display Issues"<<endl;
+						cout<<" *Press 'd' for Body Repairs"<<endl;
+						cin>>q;
+						switch (q)
+						{
+							case 'a':
+								cout<<" Cost of Battery Reordering= Rs.3000"<<endl;
+								cout<<" Collect From Shop in Time = 7 hours"<<endl;
+								amount = amount + 3000;
+								time = time + 7;
+								break;
+							case 'b':
+								cout<<" Cost of Speaker Repairing = Rs. 600 "<<endl;
+								cout<<" Collect From Shop in Time = 2 hours"<<endl;
+								amount = amount + 600;
+								time = time + 2;
+								break;
+							case 'c':
+								cout<<" Cost of Fixing the Display = Rs. 3500"<<endl<<endl;
+								cout<<" Collect From Shop in Time = 6 hours"<<endl;
+								amount = amount + 3500;
+								time = time + 6;
+								break;
+							case 'd':
+								cout<<" Cost of Body Damage Repairing is Rs. 900"<<endl<<endl;
+								cout<<"Collect From Shop in Time 1 hour"<<endl;
+								break;
+								default:
+								cout<< " Please Enter a Valid Option"<<endl;
+							}
+							break;
+						}
+						
+							case 2:
+								{
+									char q;
+									cout<<" Press 'a' for installing Adobe "<<endl;
+									cout<<" Press 'b' for installing Games"<<endl;
+									cout<<" Press 'c' for Buying Graphic Card "<<endl;
+									cout<<" Press 'd' for Software issues"<<endl;
+									cout<<" Press 'e' for Installing Antivirus"<<endl;
+									cout<<" Press 'f' for Issues related to Heating"<<endl;
+									cin>>q;
+									
+									switch (q)
+									{
+										case 'a':
+											cout<<"Cost of installing Adobe is Rs.3700"<<endl;
+											cout<<"Collect From Shop in Time 5 hours"<<endl;
+											amount = amount + 3700;
+											time = time + 5;
+											break;
+										case 'b':
+											cout<<"Cost of installing Games is 1200"<<endl;
+											cout<<"Collect From Shop in Time 2 hours"<<endl;
+											amount = amount + 1200;
+											time = time +2;
+											break;
+										case 'c':
+											cout<<"Cost of Graphic Card is Rs.1000"<<endl<<endl;
+											cout<<"Collect From Shop in Time 2 hours"<<endl;
+											amount = amount + 1000;
+											time = time + 2;
+											break;
+										case 'd':
+											cout<<"Cost Fixing Software issues is Rs.550 "<<endl<<endl;
+											cout<<"Collect From Shop in Time 4 hours"<<endl;
+											amount = amount + 550;
+											time = time + 4;
+											break;
+										case 'e':
+											cout<<"Cost of Installing Antivirus is Rs.2900"<<endl<<endl;
+											cout<<"Collect From Shop in Time 3 hours"<<endl;
+											amount = amount + 2900;
+											time = time + 3;
+											break;
+										case 'f':
+											cout<<"Cost of Resolving Heating Problem is Rs.200"<<endl<<endl;
+											cout<<"Collect From Shop in Time 2 hours"<<endl;
+											amount = amount + 200;
+											time = time + 2;
+											break;
+										default:
+										    cout<<"Please enter a valid choice"<<endl;						
+								}
+								break;
+								}
+									case 3:
+										{
+											char q;
+											cout<<"Press 'a' for Buying a New Pendrive"<<endl;
+											cout<<"Press 'b' for Buying a New Charger "<<endl;
+											cout<<"Press 'c' for Buying a New External Hard-Disk"<<endl;
+											cout<<"Press 'd' for Buying a New Cooling Pad"<<endl;
+											cin>>q;
+											switch(q)
+											{
+												case 'a':
+													cout<<" Cost of New Pendrive is Rs.650"<<endl<<endl;
+													amount = amount + 650;
+													break;
+												case 'b':
+													cout<<"Cost of New Charger is Rs.1000"<<endl<<endl;
+													amount = amount +1000;
+													break;
+												case 'c':
+													cout<<"Cost of New external Hard-Disk is 1500"<<endl<<endl;
+													amount = amount + 1500;
+													break;
+												case 'd':
+													cout<<"Cost of New Cooling Pad is Rs.1050"<<endl<<endl;
+													amount = amount + 1050;
+													break;
+												default:
+												cout<<"Please Select a Valid Option"<<endl;				
+											}
+											   
+											break;	
+											
+										}
+									
+							
+									
+									
+								}
+								cout<<"... Press 1 to Return to Menu Or Any Other Number To Exit  ..."<<endl<<endl;
+								cin>>r;
+							
+			
+						 } 
+						 while (r==1);
+						 
+					cout<<"############################################################################### $ BILL $ ###############################################################################"<<endl<<endl; 
+					cout<<"Total Price to be Paid is Rs."<<amount<<endl;
+					cout<<"Collect from Shop in "<<time<<" Hours"<<endl;	 
+				}
+			};
+void write_bill()
+{
+	char ch;
+		billing b;
+		fstream f2;
+		b.bill();
+		f2.open("file3.txt",ios::app|ios::binary);
+		cout<<"\n\n\tDO You Want To Save This Record(y/n)\t";
+		cin>>ch;
+		if(ch=='y')
+		{
+		f2.write((char*)&b,sizeof(b));
+		}
+		f2.close();
+	}
+ main()
+  {
+  	int pk;
+  	char cj;
+ 	customer c;
+ 	billing b;
+ 	label1:
+ 	cout<<"\n";	
+ 	cout<<"                                                              **********************************                              "<<endl;	
+ 	cout<<"                                                              ===================================                             "<<endl;	
+ 	cout<<"                                     ###################### * WELCOME TO KINGS LAPTOP REPAIR SHOP * ######################### "<<endl;
+ 	cout<<"                                                              ===================================                             "<<endl; 
+	cout<<"                                                              ***********************************                             "<<endl; 
+	cout<<"\n\n";
+	cout<<"========================================================================================================================================================================"<<endl;
+	cout<< "                                                                 $ PROCEDURE IS AS FOLLOWS $"<<endl<<endl;                                                 
+ 	cout<<" *Press 1 To Enter The Customer Details"<<endl<<endl;
+ 	cout<<" *Press 2 To Search Customer Data"<<endl<<endl;
+ 	cout<<" *Press 3 To Edit The Customer Data"<<endl<<endl;
+ 	cout<<" *Press 4 To Show All Customer Data"<<endl<<endl;
+ 	cout<<" *Press 5 To Enter The Problems And To Get the Total Bill"<<endl<<endl;
+ 	cout<<" *Press 6 To Delete Existing Customer Data "<<endl<<endl<<endl;
+ 	cout<<"  # Enter Your Response # "<<endl<<endl;
+ 	cin>>pk;
+ 	
+ 	switch(pk)
+ 	{
+ 		case 1:
+ 		{
+ 			cout<<"1";
+			write() 	;
+			cout<<"\n\n\n *************** SIGNUP SUCCESSFUL!*************** \n\n\n";
+			cout<<"Press 'm' To Go Back To Main Menu\n";
+			ret1:
+			cin>>cj;
+			if(cj=='m')
+			{
+			system("CLS");
+			goto label1;
+		}
+		else
+		{
+			cout<<"Wrong Input, Please Try Again!\n";
+			goto ret1;
+		}
+		 break;
+		case 2:
+		{
+			cout<<"2";
+			search();
+			cout<<"Press 'm' To Go Back To Main Menu\n";
+			ret2:
+			cin>>cj;
+			if(cj=='m')
+			{
+			system("CLS");
+			goto label1;
+				}
+		else
+		{
+			cout<<"Wrong Input, Please Try Again!\n";
+			goto ret2;
+		} 
+		break;
+		case 3:
+		{
+			cout<<"3";
+			edit();
+			cout<<"Press 'm' To Go Back To Main Menu\n";
+			ret3:
+			cin>>cj;
+			if(cj=='m')
+			{
+			system("CLS");
+			goto label1;
+				}
+		else
+		{
+			cout<<"Wrong Input, Please Try Again!\n";
+			goto ret3;
+		}
+		break;
+		case 4:
+		{
+			cout<<"4";
+			read() ;
+			cout<<"Press 'm' To Go Back To Main Menu\n";
+			ret4:
+			cin>>cj;
+			if(cj=='m')
+			{
+			system("CLS");
+			goto label1;
+				}
+		else
+		{
+			cout<<"Wrong Input, Please Try Again!\n";
+			goto ret4;
+		} 
+		break;
+		case 5:
+		{
+			cout<<"5";
+			write_bill();
+			cout<<"Press 'm' To Go Back To Main Menu\n";
+			ret5:
+			cin>>cj;
+			if(cj=='m')
+			{
+			system("CLS");
+			goto label1;
+				}
+		else
+		{
+			cout<<"Wrong Input, Please Try Again!\n";
+			goto ret5;
+		}
+		break;
+		case 6:
+		{
+			cout<<"6";
+			del();
+			cout<<"Press 'm' To Go Back To Main Menu\n";
+			ret6:
+			cin>>cj;
+			if(cj=='m')
+			{
+			system("CLS");
+			goto label1;
+				}
+		else
+		{
+			cout<<"Wrong Input, Please Try Again!\n";
+			goto ret6;
+		}
+		break;
+		default:
+		cout<<"Enter a Valid Choice";	
+			
+	 }
+ 	
+}
+ }}}}}}
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
